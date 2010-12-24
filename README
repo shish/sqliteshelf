@@ -1,0 +1,27 @@
+  _________________  .____    .__  __          
+ /   _____/\_____  \ |    |   |__|/  |_  ____  
+ \_____  \  /  / \  \|    |   |  \   __\/ __ \ 
+ /        \/   \_/.  \    |___|  ||  | \  ___/ 
+/_______  /\_____\ \_/_______ \__||__|  \___  >
+        \/        \__>       \/             \/ 
+                                          _________.__           .__   _____ 
+   Allows an SQLite database to be       /   _____/|  |__   ____ |  |_/ ____\
+   used as a python dictionary with      \_____  \ |  |  \_/ __ \|  |\   __\ 
+   persistant storage                    /        \|   Y  \  ___/|  |_|  |   
+                                        /_______  /|___|  /\___  >____/__|   
+  https://github.com/shish/sqliteshelf          \/      \/     \/            
+
+
+API docs:
+~~~~~~~~~
+See the top of sqliteshelf.py for some worked examples
+
+
+tl;dr:
+~~~~~~
+from sqliteshelf import SQLiteShelf
+d = SQLiteShelf("filename.sdb", "tablename")
+
+d is now effectively a python dictionary
+
+
