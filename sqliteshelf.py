@@ -1,8 +1,4 @@
 """
->>> class Test:
-...    def __init__(self):
-...        self.foo = "bar"
-
 by default, things are stored in a "shelf" table
 
 >>> d = SQLiteShelf("test.sdb")
@@ -30,15 +26,22 @@ moo
 moo
 >>> print 'a' in d
 True
+>>> print len(d)
+1
 >>> del d['a']
 >>> print 'a' in d
 False
+>>> del e['a']
 
 objects can be stored in shelves
 
->>> t = Test()
->>> d['t'] = t
->>> print d['t'].foo
+>> class Test:
+..    def __init__(self):
+..        self.foo = "bar"
+..
+>> t = Test()
+>> d['t'] = t
+>> print d['t'].foo
 bar
 """
 
@@ -114,3 +117,6 @@ class SQLiteShelf(SQLiteDict):
     def __setitem__(self, key, item):
         SQLiteDict.__setitem__(self, key, cPickle.dumps(item))
 
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
