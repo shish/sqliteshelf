@@ -31,6 +31,8 @@ True
 >>> del d['a']
 >>> print 'a' in d
 False
+>>> print len(d)
+0
 >>> del e['a']
 
 objects can be stored in shelves
@@ -43,6 +45,17 @@ objects can be stored in shelves
 >> d['t'] = t
 >> print d['t'].foo
 bar
+
+errors are as normal for a dict
+
+>>> print d['x']
+Traceback (most recent call last):
+    ...
+KeyError: 'x'
+>>> del d['x']
+Traceback (most recent call last):
+    ...
+KeyError: 'x'
 """
 
 from UserDict import DictMixin
