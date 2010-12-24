@@ -50,13 +50,6 @@ import cPickle
 import sqlite3
  
 class SQLiteDict(DictMixin):
-    # MyDict only needs to implement getitem, setitem, delitem and keys (at a 
-    # minimum) and UserDict will provide the rest of the standard dictionary
-    # methods based on these four.
-    #
-    # getitem and delitem should raise KeyError if no item exists for the given
-    # key. getitem, setitem and delitem should raise TypeError if the given key
-    # is of the wrong type.
     def __init__(self, filename=':memory:', table='shelf', flags='r', mode=None):
         self.table = table
         MAKE_SHELF = 'CREATE TABLE IF NOT EXISTS '+self.table+' (key TEXT, value TEXT)'
