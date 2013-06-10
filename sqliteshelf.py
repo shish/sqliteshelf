@@ -64,12 +64,12 @@ except ImportError:
     from collections import MutableMapping as DictMixin
 
 try:
-    import cPickle
+    import cPickle as pickle
 except ImportError:
     import pickle
-    
+
 import sqlite3
- 
+
 class SQLiteDict(DictMixin):
     def __init__(self, filename=':memory:', table='shelf', flags='r', mode=None):
         self.table = table
@@ -80,26 +80,26 @@ class SQLiteDict(DictMixin):
         self.conn.execute(MAKE_SHELF)
         self.conn.execute(MAKE_INDEX)
         self.conn.commit()
- 
+
     def __getitem__(self, key):
         GET_ITEM = 'SELECT value FROM '+self.table+' WHERE key = ?'
         item = self.conn.execute(GET_ITEM, (key,)).fetchone()
         if item is None:
             raise KeyError(key)
         return item[0]
- 
+
     def __setitem__(self, key, item):
         ADD_ITEM = 'REPLACE INTO '+self.table+' (key, value) VALUES (?,?)'
         self.conn.execute(ADD_ITEM, (key, item))
         self.conn.commit()
- 
+
     def __delitem__(self, key):
         if key not in self:
             raise KeyError(key)
-        DEL_ITEM = 'DELETE FROM '+self.table+' WHERE key = ?'       
+        DEL_ITEM = 'DELETE FROM '+self.table+' WHERE key = ?'
         self.conn.execute(DEL_ITEM, (key,))
         self.conn.commit()
- 
+
     def keys(self):
         c = self.conn.cursor()
         try:
@@ -126,10 +126,10 @@ class SQLiteDict(DictMixin):
 
 class SQLiteShelf(SQLiteDict):
     def __getitem__(self, key):
-        return cPickle.loads(SQLiteDict.__getitem__(self, key))
- 
+        return pickle.loads(SQLiteDict.__getitem__(self, key))
+
     def __setitem__(self, key, item):
-        SQLiteDict.__setitem__(self, key, cPickle.dumps(item))
+        SQLiteDict.__setitem__(self, key, pickle.dumps(item))
 
 if __name__ == "__main__":
     import doctest
