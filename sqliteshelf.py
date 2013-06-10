@@ -58,8 +58,16 @@ Traceback (most recent call last):
 KeyError: 'x'
 """
 
-from UserDict import DictMixin
-import cPickle
+try:
+    from UserDict import DictMixin
+except ImportError:
+    from collections import MutableMapping as DictMixin
+
+try:
+    import cPickle
+except ImportError:
+    import pickle
+    
 import sqlite3
  
 class SQLiteDict(DictMixin):
