@@ -9,9 +9,9 @@ you can put multiple shelves into a single SQLite database
 
 both are empty to start with
 
->>> print d
+>>> d
 {}
->>> print e
+>>> e
 {}
 
 adding stuff is as simple as a regular dict
@@ -20,18 +20,18 @@ adding stuff is as simple as a regular dict
 
 regular dict actions work
 
->>> print d['a']
-moo
->>> print e['a']
-moo
->>> print 'a' in d
+>>> d['a']
+'moo'
+>>> e['a']
+'moo'
+>>> 'a' in d
 True
->>> print len(d)
+>>> len(d)
 1
 >>> del d['a']
->>> print 'a' in d
+>>> 'a' in d
 False
->>> print len(d)
+>>> len(d)
 0
 >>> del e['a']
 
@@ -48,7 +48,7 @@ bar
 
 errors are as normal for a dict
 
->>> print d['x']
+>>> d['x']
 Traceback (most recent call last):
     ...
 KeyError: 'x'
@@ -100,6 +100,15 @@ class SQLiteDict(DictMixin):
         self.conn.execute(DEL_ITEM, (key,))
         self.conn.commit()
 
+    def __iter__(self):
+        c = self.conn.cursor()
+        try:
+            c.execute('SELECT key FROM '+self.table+' ORDER BY key')
+            for row in c:
+                yield row[0]
+        finally:
+            c.close()
+
     def keys(self):
         c = self.conn.cursor()
         try:
@@ -123,6 +132,9 @@ class SQLiteDict(DictMixin):
 
     def __del__(self):
         self.close()
+
+    def __repr__(self):
+        return repr(dict(self))
 
 class SQLiteShelf(SQLiteDict):
     def __getitem__(self, key):
