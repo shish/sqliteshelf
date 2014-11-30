@@ -56,6 +56,12 @@ KeyError: 'x'
 Traceback (most recent call last):
     ...
 KeyError: 'x'
+
+Adding and fetching binary strings
+
+>>> d[1] = "a\\x00b"
+>>> d[1]
+'a\\x00b'
 """
 
 try:
@@ -68,12 +74,19 @@ try:
 except ImportError:
     import pickle
 
+import sys
+valtype = str
+if sys.version > '3':
+    buffer = memoryview
+    valtype = bytes
+
 import sqlite3
 
 class SQLiteDict(DictMixin):
-    def __init__(self, filename=':memory:', table='shelf', flags='r', mode=None):
+    def __init__(self, filename=':memory:', table='shelf', flags='r', mode=None, valtype=valtype):
         self.table = table
-        MAKE_SHELF = 'CREATE TABLE IF NOT EXISTS '+self.table+' (key TEXT, value TEXT)'
+        self.valtype = valtype
+        MAKE_SHELF = 'CREATE TABLE IF NOT EXISTS '+self.table+' (key TEXT, value BLOB)'
         MAKE_INDEX = 'CREATE UNIQUE INDEX IF NOT EXISTS '+self.table+'_keyndx ON '+self.table+'(key)'
         self.conn = sqlite3.connect(filename)
         self.conn.text_factory = str
@@ -86,11 +99,11 @@ class SQLiteDict(DictMixin):
         item = self.conn.execute(GET_ITEM, (key,)).fetchone()
         if item is None:
             raise KeyError(key)
-        return item[0]
+        return self.valtype(item[0])
 
     def __setitem__(self, key, item):
         ADD_ITEM = 'REPLACE INTO '+self.table+' (key, value) VALUES (?,?)'
-        self.conn.execute(ADD_ITEM, (key, item))
+        self.conn.execute(ADD_ITEM, (key, sqlite3.Binary(item)))
         self.conn.commit()
 
     def __delitem__(self, key):
